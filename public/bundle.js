@@ -14601,7 +14601,7 @@ module.exports = function spread(callback) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.post_entry = exports.fetch_all_entries = exports.fetch_accounts = undefined;
+exports.create_account = exports.post_entry = exports.fetch_all_entries = exports.fetch_accounts = undefined;
 
 var _axios = __webpack_require__(46);
 
@@ -14641,11 +14641,15 @@ var post_entry = exports.post_entry = function post_entry(account_id, entry_to_p
   };
 };
 
-// export const fetch_account_entries = (account_id) => dispatch => {
-//   axios.get(`/api/accounts/entries/${account_id}`)
-//     .then(res => dispatch({ type: FETCH_ACCOUNT_ENTRIES, entries: res.data }))
-//     .catch(err => console.error(err))
-// }
+var create_account = exports.create_account = function create_account(account_id, payload) {
+  return function (dispatch) {
+    _axios2.default.post('/api/accounts/' + account_id, payload).then(function () {
+      return dispatch(fetch_accounts());
+    }).catch(function (err) {
+      return console.error(err);
+    });
+  };
+};
 
 /***/ }),
 /* 157 */
@@ -14705,6 +14709,8 @@ var _lodash = __webpack_require__(220);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _account_map = __webpack_require__(159);
+
 var _EntryTable = __webpack_require__(345);
 
 var _EntryTable2 = _interopRequireDefault(_EntryTable);
@@ -14730,6 +14736,10 @@ var SearchAccount = function (_Component) {
     var _this = _possibleConstructorReturn(this, (SearchAccount.__proto__ || Object.getPrototypeOf(SearchAccount)).call(this, props));
 
     _this.changeQuery = function (prop, val) {
+      return _this.setState(_defineProperty({}, prop, val));
+    };
+
+    _this.changeProp = function (prop, val) {
       return _this.setState(_defineProperty({}, prop, val));
     };
 
@@ -14789,7 +14799,47 @@ var SearchAccount = function (_Component) {
       }
     };
 
-    _this.state = { query: '', acct_id: '' };
+    _this.renderCategories = function () {
+      var categories = _account_map.ACCT_CATEGORIES.map(function (c) {
+        return c.category;
+      });
+      return categories.map(function (c, idx) {
+        return _react2.default.createElement(
+          'option',
+          { key: idx, value: c },
+          c
+        );
+      });
+    };
+
+    _this.renderSubcategories = function () {
+      if (_this.state.category) {
+        var category = _account_map.ACCT_CATEGORIES.filter(function (c) {
+          return c.category == _this.state.category;
+        })[0];
+        return category['subcategory'].map(function (s, idx) {
+          return _react2.default.createElement(
+            'option',
+            { key: idx, value: s },
+            s
+          );
+        });
+      }
+    };
+
+    _this.createAccount = function (e) {
+      e.preventDefault();
+      var _this$state = _this.state,
+          id = _this$state.id,
+          name = _this$state.name,
+          category = _this$state.category,
+          subcategory = _this$state.subcategory,
+          description = _this$state.description;
+
+      _this.props.create_account(id, { id: id, name: name, category: category, subcategory: subcategory, description: description });
+    };
+
+    _this.state = { query: '', id: '', name: '', category: '', subcategory: '', description: '' };
     return _this;
   }
 
@@ -14853,6 +14903,62 @@ var SearchAccount = function (_Component) {
           _react2.default.createElement(
             'tbody',
             null,
+            _react2.default.createElement(
+              'tr',
+              null,
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement('input', { type: 'text', placeholder: 'acct_id', onChange: function onChange(e) {
+                    return _this2.changeProp('id', e.target.value);
+                  } })
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement('input', { type: 'text', placeholder: 'acct_name', onChange: function onChange(e) {
+                    return _this2.changeProp('name', e.target.value);
+                  } })
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                  'select',
+                  { onChange: function onChange(e) {
+                      return _this2.changeProp('category', e.target.value);
+                    } },
+                  this.renderCategories()
+                )
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                  'select',
+                  { onChange: function onChange(e) {
+                      return _this2.changeProp('subcategory', e.target.value);
+                    }, value: this.state.subcategory },
+                  this.renderSubcategories()
+                )
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement('input', { type: 'text', placeholder: 'description', onChange: function onChange(e) {
+                    return _this2.changeProp('description', e.target.value);
+                  } })
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                  'button',
+                  { onClick: this.createAccount },
+                  'CREATE'
+                )
+              )
+            ),
             this.renderAccountList()
           )
         )
@@ -14867,10 +14973,23 @@ var mapStateToProps = function mapStateToProps(_ref) {
   var accounts = _ref.accounts;
   return { accounts: accounts };
 };
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetch_accounts: _account.fetch_accounts })(SearchAccount);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetch_accounts: _account.fetch_accounts, create_account: _account.create_account })(SearchAccount);
 
 /***/ }),
-/* 159 */,
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var SALE = exports.SALE = 41100;
+
+var ACCT_CATEGORIES = exports.ACCT_CATEGORIES = [{ category: '', subcategory: [''] }, { category: 'ASSET', subcategory: ['', 'CURRENT_ASSET', 'NON_CURRENT_ASSET'] }, { category: 'LIABILITY', subcategory: ['', 'CURRENT_LIABILITY', 'NON_CURRENT_LIABILITY'] }, { category: 'EQUITY', subcategory: ['', 'EQUITY'] }, { category: 'REVENUE', subcategory: ['', 'REVENUE'] }, { category: 'COST', subcategory: ['', 'COST'] }];
+
+/***/ }),
 /* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49001,7 +49120,14 @@ var JournalEntry = function (_Component) {
       var queried_entries = _lodash2.default.filter(_this.props.entries, function (e) {
         return e.account_id.startsWith(_this.state.acct_id);
       });
-      if (_lodash2.default.uniqBy(queried_entries, 'account_id').length == 1) _this.props.post_entry(queried_entries[0].account_id, _this.state.entry_to_post);else return;
+
+      if (_lodash2.default.filter(_this.props.accounts, function (acct) {
+        return acct.id == _this.state.acct_id;
+      }).length == 1) {
+        return _this.props.post_entry(_this.state.acct_id, _this.state.entry_to_post);
+      } else if (_lodash2.default.uniqBy(queried_entries, 'account_id').length == 1) {
+        return _this.props.post_entry(queried_entries[0].account_id, _this.state.entry_to_post);
+      } else return;
     };
 
     _this.mapEntries = function () {
@@ -49020,6 +49146,7 @@ var JournalEntry = function (_Component) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       this.props.fetch_all_entries();
+      this.props.fetch_accounts();
     }
   }, {
     key: 'render',
@@ -49060,10 +49187,11 @@ var JournalEntry = function (_Component) {
 }(_react.Component);
 
 var mapStateToProps = function mapStateToProps(_ref) {
-  var entries = _ref.entries;
-  return { entries: entries };
+  var entries = _ref.entries,
+      accounts = _ref.accounts;
+  return { entries: entries, accounts: accounts };
 };
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetch_all_entries: _account.fetch_all_entries, post_entry: _account.post_entry })(JournalEntry);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetch_accounts: _account.fetch_accounts, fetch_all_entries: _account.fetch_all_entries, post_entry: _account.post_entry })(JournalEntry);
 
 /***/ })
 /******/ ]);

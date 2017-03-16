@@ -19,10 +19,8 @@ export const post_entry = (account_id, entry_to_post) => dispatch => {
     .catch(err => console.error(err))
 }
 
-
-
-// export const fetch_account_entries = (account_id) => dispatch => {
-//   axios.get(`/api/accounts/entries/${account_id}`)
-//     .then(res => dispatch({ type: FETCH_ACCOUNT_ENTRIES, entries: res.data }))
-//     .catch(err => console.error(err))
-// }
+export const create_account = (account_id, payload ) => dispatch => {
+  axios.post(`/api/accounts/${account_id}`, payload)
+    .then(() => dispatch(fetch_accounts()))
+    .catch(err => console.error(err))
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetch_all_entries, post_entry } from '_actions/account'
+import { fetch_accounts, fetch_all_entries, post_entry } from '_actions/account'
 import _ from 'lodash'
 
 import EntryTable from './EntryTable'
@@ -15,6 +15,7 @@ class JournalEntry extends Component {
 
     componentWillMount() {
       this.props.fetch_all_entries()
+      this.props.fetch_accounts()
     }
 
     queryEntryByAcctId = (acct_id) => this.setState({ acct_id })
@@ -24,9 +25,14 @@ class JournalEntry extends Component {
     postEntry = (e) => {
       e.preventDefault()
       const queried_entries = _.filter(this.props.entries, e => e.account_id.startsWith(this.state.acct_id) );
-      if (_.uniqBy(queried_entries, 'account_id').length == 1) this.props.post_entry(queried_entries[0].account_id, this.state.entry_to_post);
-      else return
+
+      if ( _.filter(this.props.accounts, acct => acct.id == this.state.acct_id).length == 1 ) {
+        return this.props.post_entry(this.state.acct_id, this.state.entry_to_post)
+      } else if ( _.uniqBy(queried_entries, 'account_id').length == 1 ) {
+        return this.props.post_entry(queried_entries[0].account_id, this.state.entry_to_post);
+      } else return
     }
+
 
     mapEntries = () => {
       const queried_entries = _.filter(this.props.entries, e => e.account_id.startsWith(this.state.acct_id))
@@ -53,5 +59,5 @@ class JournalEntry extends Component {
     }
 }
 
-const mapStateToProps = ({ entries }) => ({ entries })
-export default connect(mapStateToProps, { fetch_all_entries, post_entry }) (JournalEntry)
+const mapStateToProps = ({ entries, accounts }) => ({ entries, accounts })
+export default connect(mapStateToProps, { fetch_accounts, fetch_all_entries, post_entry }) (JournalEntry)

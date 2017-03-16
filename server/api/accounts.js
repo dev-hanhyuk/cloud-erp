@@ -30,7 +30,6 @@ router.get('/entries/:accountId', (req, res, next) => {
 })
 
 router.post('/entries/:accountId', (req, res, next) => {
-  console.log('****************\n', req.body);
   Entry.create(req.body)
     .then(entry => {
       entry.setAccount(req.params.accountId)
@@ -38,5 +37,11 @@ router.post('/entries/:accountId', (req, res, next) => {
       return
     })
     .then(() => res.sendStatus(201))
+    .catch(next)
+})
+
+router.post('/:accountId', (req, res, next) => {
+  Account.create(req.body)
+    .then(account => res.sendStatus(201))
     .catch(next)
 })
