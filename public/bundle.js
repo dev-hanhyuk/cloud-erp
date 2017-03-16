@@ -1857,6 +1857,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var FETCH_ACCOUNT = exports.FETCH_ACCOUNT = 'FETCH_ACCOUNT';
 var FETCH_ACCOUNTS = exports.FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
+var FETCH_ACCOUNT_ENTRIES = exports.FETCH_ACCOUNT_ENTRIES = 'FETCH_ACCOUNT_ENTRIES';
 
 /***/ }),
 /* 16 */
@@ -13686,6 +13687,14 @@ var _account = __webpack_require__(160);
 
 var _account2 = _interopRequireDefault(_account);
 
+var _AccountList = __webpack_require__(158);
+
+var _AccountList2 = _interopRequireDefault(_AccountList);
+
+var _JournalEntry = __webpack_require__(346);
+
+var _JournalEntry2 = _interopRequireDefault(_JournalEntry);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function () {
@@ -13696,7 +13705,12 @@ exports.default = function () {
       _reactRouter.Route,
       { path: '/', component: _App2.default },
       _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/account' }),
-      _react2.default.createElement(_reactRouter.Route, { path: '/account', component: _account2.default })
+      _react2.default.createElement(
+        _reactRouter.Route,
+        { path: '/account', component: _account2.default },
+        _react2.default.createElement(_reactRouter.Route, { path: '/account/list', component: _AccountList2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: '/account/journal_entry', component: _JournalEntry2.default })
+      )
     )
   );
 };
@@ -14587,7 +14601,7 @@ module.exports = function spread(callback) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetch_accounts = undefined;
+exports.post_entry = exports.fetch_all_entries = exports.fetch_accounts = undefined;
 
 var _axios = __webpack_require__(46);
 
@@ -14606,6 +14620,32 @@ var fetch_accounts = exports.fetch_accounts = function fetch_accounts() {
     });
   };
 };
+
+var fetch_all_entries = exports.fetch_all_entries = function fetch_all_entries() {
+  return function (dispatch) {
+    _axios2.default.get('/api/accounts/entries').then(function (res) {
+      return dispatch({ type: _actions.FETCH_ACCOUNT_ENTRIES, entries: res.data });
+    }).catch(function (err) {
+      return console.error(err);
+    });
+  };
+};
+
+var post_entry = exports.post_entry = function post_entry(account_id, entry_to_post) {
+  return function (dispatch) {
+    _axios2.default.post('/api/accounts/entries/' + account_id, entry_to_post).then(function () {
+      return dispatch(fetch_all_entries());
+    }).catch(function (err) {
+      return console.error(err);
+    });
+  };
+};
+
+// export const fetch_account_entries = (account_id) => dispatch => {
+//   axios.get(`/api/accounts/entries/${account_id}`)
+//     .then(res => dispatch({ type: FETCH_ACCOUNT_ENTRIES, entries: res.data }))
+//     .catch(err => console.error(err))
+// }
 
 /***/ }),
 /* 157 */
@@ -14664,6 +14704,10 @@ var _account = __webpack_require__(156);
 var _lodash = __webpack_require__(220);
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _EntryTable = __webpack_require__(345);
+
+var _EntryTable2 = _interopRequireDefault(_EntryTable);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14728,24 +14772,24 @@ var SearchAccount = function (_Component) {
             _react2.default.createElement(
               'td',
               null,
-              acct.description
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
               acct.category
             ),
             _react2.default.createElement(
               'td',
               null,
               acct.subcategory
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              acct.description
             )
           );
         });
       }
     };
 
-    _this.state = { query: '' };
+    _this.state = { query: '', acct_id: '' };
     return _this;
   }
 
@@ -14773,6 +14817,39 @@ var SearchAccount = function (_Component) {
         _react2.default.createElement(
           'table',
           null,
+          _react2.default.createElement(
+            'thead',
+            null,
+            _react2.default.createElement(
+              'tr',
+              null,
+              _react2.default.createElement(
+                'td',
+                null,
+                'id'
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                'name'
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                'category'
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                'subcategory'
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                'description'
+              )
+            )
+          ),
           _react2.default.createElement(
             'tbody',
             null,
@@ -14809,6 +14886,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = __webpack_require__(314);
 
 var _AccountList = __webpack_require__(158);
 
@@ -14848,13 +14927,30 @@ var _class = function (_Component) {
           null,
           'ACCOUNT MODULE'
         ),
-        _react2.default.createElement(_AccountList2.default, null)
+        _react2.default.createElement(
+          'nav',
+          null,
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: '/account/list' },
+            'Account List'
+          ),
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: '/account/journal_entry' },
+            'Journal Entries'
+          )
+        ),
+        this.props.children
       );
     }
   }]);
 
   return _class;
 }(_react.Component);
+
+//<AccountList />
+
 
 exports.default = _class;
 
@@ -14958,11 +15054,16 @@ var _accounts = __webpack_require__(184);
 
 var _accounts2 = _interopRequireDefault(_accounts);
 
+var _entries = __webpack_require__(344);
+
+var _entries2 = _interopRequireDefault(_entries);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var rootReducer = (0, _redux.combineReducers)({
   account: _account2.default,
-  accounts: _accounts2.default
+  accounts: _accounts2.default,
+  entries: _entries2.default
 });
 
 exports.default = rootReducer;
@@ -48597,6 +48698,372 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   { store: _store2.default },
   _react2.default.createElement(_routes2.default, null)
 ), document.getElementById('main'));
+
+/***/ }),
+/* 343 */,
+/* 344 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _actions = __webpack_require__(15);
+
+var INITIAL_STATE = [];
+
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_STATE;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.FETCH_ACCOUNT_ENTRIES:
+      return action.entries;
+    default:
+      return state;
+  }
+};
+
+/***/ }),
+/* 345 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var styles = {};
+
+exports.default = function (_ref) {
+  var entries = _ref.entries;
+
+  var total_debit = entries.map(function (e) {
+    return e.debit;
+  }).reduce(function (prev, curr) {
+    return prev + curr;
+  }, 0);
+  var total_credit = entries.map(function (e) {
+    return e.credit;
+  }).reduce(function (prev, curr) {
+    return prev + curr;
+  }, 0);
+  var net_balance = total_debit - total_credit;
+
+  return _react2.default.createElement(
+    'section',
+    null,
+    _react2.default.createElement(
+      'table',
+      null,
+      _react2.default.createElement(
+        'thead',
+        null,
+        _react2.default.createElement(
+          'tr',
+          null,
+          _react2.default.createElement(
+            'td',
+            null,
+            'date'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'account_id'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'category'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'subcategory'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'name'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'debit'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'credit'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'adjust_entry'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'posted'
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            'description'
+          )
+        )
+      ),
+      _react2.default.createElement(
+        'tbody',
+        null,
+        entries.map(function (e) {
+          return _react2.default.createElement(
+            'tr',
+            { key: e.id },
+            _react2.default.createElement(
+              'td',
+              null,
+              e.updated_at.slice(0, 10)
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.account.id
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.account.category
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.account.subcategory
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.account.name
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.debit
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.credit
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.adjust_entry
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.posted_id
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              e.description
+            )
+          );
+        })
+      ),
+      _react2.default.createElement(
+        'tfoot',
+        null,
+        _react2.default.createElement(
+          'tr',
+          null,
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement(
+            'td',
+            null,
+            total_debit
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            total_credit
+          ),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null)
+        ),
+        _react2.default.createElement(
+          'tr',
+          null,
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement(
+            'td',
+            null,
+            'Net_Balance: '
+          ),
+          _react2.default.createElement(
+            'td',
+            null,
+            net_balance
+          ),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null),
+          _react2.default.createElement('td', null)
+        )
+      )
+    )
+  );
+};
+
+/***/ }),
+/* 346 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(24);
+
+var _account = __webpack_require__(156);
+
+var _lodash = __webpack_require__(220);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _EntryTable = __webpack_require__(345);
+
+var _EntryTable2 = _interopRequireDefault(_EntryTable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var styles = {};
+
+var JournalEntry = function (_Component) {
+  _inherits(JournalEntry, _Component);
+
+  function JournalEntry(props) {
+    _classCallCheck(this, JournalEntry);
+
+    var _this = _possibleConstructorReturn(this, (JournalEntry.__proto__ || Object.getPrototypeOf(JournalEntry)).call(this, props));
+
+    _this.queryEntryByAcctId = function (acct_id) {
+      return _this.setState({ acct_id: acct_id });
+    };
+
+    _this.changeProp = function (prop, val) {
+      return _this.setState({ entry_to_post: _extends({}, _this.state.entry_to_post, _defineProperty({}, prop, val)) });
+    };
+
+    _this.postEntry = function (e) {
+      e.preventDefault();
+      var queried_entries = _lodash2.default.filter(_this.props.entries, function (e) {
+        return e.account_id.startsWith(_this.state.acct_id);
+      });
+      if (_lodash2.default.uniqBy(queried_entries, 'account_id').length == 1) _this.props.post_entry(queried_entries[0].account_id, _this.state.entry_to_post);else return;
+    };
+
+    _this.mapEntries = function () {
+      var queried_entries = _lodash2.default.filter(_this.props.entries, function (e) {
+        return e.account_id.startsWith(_this.state.acct_id);
+      });
+      if (queried_entries.length > 0) return queried_entries;
+      return _this.props.entries;
+    };
+
+    _this.state = { queried_entries: null, entry_to_post: { posted: 1 } };
+    return _this;
+  }
+
+  _createClass(JournalEntry, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.props.fetch_all_entries();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      return _react2.default.createElement(
+        'section',
+        null,
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Journal Entry'
+        ),
+        _react2.default.createElement('input', { type: 'text', placeholder: 'account_id', onChange: function onChange(e) {
+            return _this2.queryEntryByAcctId(e.target.value);
+          } }),
+        _react2.default.createElement('input', { type: 'text', placeholder: 'debit', onChange: function onChange(e) {
+            return _this2.changeProp('debit', +e.target.value);
+          } }),
+        _react2.default.createElement('input', { type: 'text', placeholder: 'credit', onChange: function onChange(e) {
+            return _this2.changeProp('credit', +e.target.value);
+          } }),
+        _react2.default.createElement('input', { type: 'text', placeholder: 'description', onChange: function onChange(e) {
+            return _this2.changeProp('description', e.target.value);
+          } }),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.postEntry },
+          'POST'
+        ),
+        _react2.default.createElement(_EntryTable2.default, { entries: this.mapEntries() })
+      );
+    }
+  }]);
+
+  return JournalEntry;
+}(_react.Component);
+
+var mapStateToProps = function mapStateToProps(_ref) {
+  var entries = _ref.entries;
+  return { entries: entries };
+};
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetch_all_entries: _account.fetch_all_entries, post_entry: _account.post_entry })(JournalEntry);
 
 /***/ })
 /******/ ]);

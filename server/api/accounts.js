@@ -3,21 +3,11 @@
 const router = require('express').Router()
 const db = require('../../db')
 const Account = db.model('account')
+const Entry = db.model('entry')
 const _ = require('lodash')
 
 module.exports = router
 
-const find_by_id = (account_id) => {
-  return Account.findAll({where: {$or: [{acct_id: account_id}, {acct_name: account_id}]} })
-    .then(accounts => {
-      let accountDetail = [];
-      accounts.map(acct => {
-        let net_balance = {net_balance: acct.net_balance()};
-        accountDetail.push(Object.assign({}, acct.dataValues, net_balance))
-      })
-      return accountDetail
-    })
-}
 
 
 router.get('/', (req, res, next) => {
@@ -26,32 +16,27 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
-router.get(`/:accountId`, (req, res, next) => {
-    find_by_id(req.params.accountId)
-      .then(accountDetail => res.send(accountDetail))
-      .catch(next)
-})
-
-router.post('/api/accounts/find', (req, res, next) => {
-  const {} = req.body;
-  // Account.findAll({ where: })
-})
-
-
-router.post('/register/:adminId', (req, res, next) => {
-  Account.create(req.body)
-    .then(account => {
-      account.setPosted(req.params.adminId)
-      res.send(account)
-    })
+router.get('/entries', (req, res, next) => {
+  Entry.findAll({ include: {model: Account} })
+    .then(entries => res.send(entries))
     .catch(next)
 })
 
+router.get('/entries/:accountId', (req, res, next) => {
+  Account.findById(req.params.accountId)
+    .then(account => account.getEntries())
+    .then(entries => res.send(entries))
+    .catch(next)
+})
 
-router.post('/post/:accountId', (req, res, next) => {
-  Account.create(req.body)
-    .then(account => account.setPosted(req.body.posted))
-    .then(() => find_by_id(req.params.accountId))
-    .then(accountDetail => res.send(accountDetail))
+router.post('/entries/:accountId', (req, res, next) => {
+  console.log('****************\n', req.body);
+  Entry.create(req.body)
+    .then(entry => {
+      entry.setAccount(req.params.accountId)
+      entry.setPosted(req.body.posted)
+      return
+    })
+    .then(() => res.sendStatus(201))
     .catch(next)
 })

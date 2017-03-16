@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import { fetch_accounts } from '_actions/account'
 import _ from 'lodash'
 
+import EntryTable from './EntryTable'
 
 const styles={}
 
 class SearchAccount extends Component {
     constructor(props) {
       super(props)
-      this.state = {query: ''}
+      this.state = {query: '', acct_id: ''}
     }
 
     componentWillMount() {
@@ -33,9 +34,9 @@ class SearchAccount extends Component {
           <tr key={acct.id}>
             <td>{acct.id}</td>
             <td>{acct.name}</td>
-            <td>{acct.description}</td>
             <td>{acct.category}</td>
             <td>{acct.subcategory}</td>
+            <td>{acct.description}</td>
           </tr>))
       }
     }
@@ -46,11 +47,22 @@ class SearchAccount extends Component {
         <section>
           <h3>Account List</h3>
           <input type="text" placeholder="id, name, category, etc." onChange={e => this.changeQuery('query', e.target.value)}/>
+
           <table>
+            <thead>
+              <tr>
+                <td>id</td>
+                <td>name</td>
+                <td>category</td>
+                <td>subcategory</td>
+                <td>description</td>
+              </tr>
+            </thead>
             <tbody>
               { this.renderAccountList() }
             </tbody>
           </table>
+
         </section>
       )
     }
