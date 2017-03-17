@@ -1,0 +1,28 @@
+inventory flow
+
+  //1. total availability check
+  const availaility = inventories.filter(i => i.remainder > 0).reduce((p, c) => p + c, 0)
+  if (availability > n_inventory_outflow) {
+    //2. remainder check
+    const inventories = _.filter(inventories, i => i.remainder > 0)
+    const inv = _.sortBy(inventories, i => i.id) //FIFO
+    const inv = _.reverse(_.sortBy(inventories, i => i.id)) //LIFO
+    const q = n_inventory_outflow
+    const total_cost = 0
+
+    for (let i = 0; i < inv.length; i++) {
+      if (inv[i].remainder >= q ) {
+        inv[i].remainder = inv[i].remainder - q;
+        total_cost = inv[i].unit_price * q
+        break;
+      } else if (inv[i].remainder < q) {
+        inv[i].remainder = 0;
+        total_cost += inve[i].unit_price * inv[i].remainder;
+        q -= inv[i].remainder;
+        continue;
+      }
+    }
+
+    const unit_price = total_cost / q; //average unit_price
+
+  }

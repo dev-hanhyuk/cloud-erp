@@ -16,6 +16,9 @@ const Entry = db.define('entry', {
   adjust_entry: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
+  },
+  reference: {
+    type: Sequelize.STRING
   }
 }, {
   instanceMethods: {

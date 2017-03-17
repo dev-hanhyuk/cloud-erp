@@ -29,6 +29,12 @@ router.get('/entries/:accountId', (req, res, next) => {
     .catch(next)
 })
 
+router.get(`/entries/:accountId/:saleId`, (req, res, next) => {
+  Entry.findOne({ where: { reference: req.params.saleId }})
+    .then(entry => res.send(entry))
+    .catch(next)
+})
+
 router.post('/entries/:accountId', (req, res, next) => {
   Entry.create(req.body)
     .then(entry => {

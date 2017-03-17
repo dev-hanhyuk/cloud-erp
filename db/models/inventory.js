@@ -4,13 +4,17 @@ const Sequelize = require('sequelize')
 const db = require('../index')
 
 const Inventory = db.define('inventory', {
-  entry_date: Sequelize.DATE,
-  entry_type: Sequelize.ENUM('purchased', 'sold'),
   quantity: Sequelize.INTEGER,
-  unit_price: Sequelize.FLOAT
+  remainder: {
+    type: Sequelize.INTEGER,
+    defaultValue: this.quantity
+  },
+  unit_price: Sequelize.FLOAT,
+  description: Sequelize.TEXT
 }, {
   instanceMethods: {
-    sub_total() { return this.quantity * this.unit_price }
+    acquisition_cost() { return this.quantity * this.unit_price },
+    net_balance() { return this.remainder * this.unit_price }
   }
 })
 

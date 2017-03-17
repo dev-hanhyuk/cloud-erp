@@ -6,6 +6,9 @@ api
   .use('/business', require('./business'))
   .use('/products', require('./products'))
   .use('/accounts', require('./accounts'))
+  .use('/sales', require('./sales'))
+  .use('/invoices', require('./invoices'))
+  .use('/inventory', require('./inventory'))
 
 
 // error handler (send 500 error)

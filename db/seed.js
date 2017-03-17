@@ -20,16 +20,24 @@ const createProducts = () => db.Promise.map([
 const createAccounts = () => db.Promise.map([
   {id: 11100, name: 'cash', description: 'Cash and Equivalent', category: 'ASSET', subcategory: 'CURRENT_ASSET'},
   {id: 11200, name: 'Account Receivables', description: 'Account Receivable', category: 'ASSET', subcategory: 'CURRENT_ASSET'},
+  {id: 11300, name: 'Inventory', description: 'Inventory to sell', category: 'ASSET', subcategory: 'CURRENT_ASSET'},
   {id: 21100, name: 'Account Payables', description: 'Account Payables', category: 'LIABILITY', subcategory: 'CURRENT_LIABILITY'},
   {id: 31100, name: "Sharehoders' Equity", description: 'Equity', category: 'EQUITY', subcategory: 'EQUITY'},
+  {id: 41100, name: "Sales", description: 'Sales Revenue', category: 'REVENUE', subcategory: 'REVENUE'},
+  {id: 41200, name: "Sales Discount", description: 'Sales Discount', category: 'REVENUE', subcategory: 'REVENUE'},
+  {id: 51100, name: "Cost of Goods Sold", description: 'Cost matching Sales', category: 'COST', subcategory: 'COST'}
 ], acct => db.model('account').create(acct))
 
 const createEntries = () => db.Promise.map([
-  {account_id: 11100, description: 'cash in-flow', debit: 5000, posted_id: 1},
-  {account_id: 11200, description: 'sales occurred', debit: 3000, posted_id: 2},
-  {account_id: 21100, description: 'purchased inventory', credit: 2000, posted_id: 1},
-  {account_id: 31100, description: 'equity: cash in-flow', credit: 5000, posted_id: 1},
+  {account_id: 11100, description: 'cash in-flow', debit: 100000, posted_id: 1},
+  {account_id: 31100, description: 'equity: cash in-flow', credit: 100000, posted_id: 1}
 ], e => db.model('entry').create(e))
+
+//{account_id: 11100, description: 'cash out-flow: inventory purchased in cash', debit: -3000, posted_id: 1},
+//{account_id: 11300, description: 'Inventory', debit: 3000, posted_id: 1}
+//{account_id: 11200, description: 'sales occurred', debit: 3000, posted_id: 2},
+//{account_id: 21100, description: 'purchased inventory', credit: 3000, posted_id: 1},
+
 
 db.didSync
   .then(() => db.sync({force: true}))

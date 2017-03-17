@@ -23,6 +23,7 @@ export default ({ entries }) => {
             <td>credit</td>
             <td>adjust_entry</td>
             <td>posted</td>
+            <td>reference</td>
             <td>description</td>
           </tr>
         </thead>
@@ -38,6 +39,7 @@ export default ({ entries }) => {
             <td>{e.credit}</td>
             <td>{e.adjust_entry}</td>
             <td>{e.posted_id}</td>
+            <td>{e.reference}</td>
             <td>{e.description}</td>
           </tr>
           ))}
@@ -49,8 +51,22 @@ export default ({ entries }) => {
             <td></td>
             <td></td>
             <td></td>
+            <td>Total Debit: </td>
             <td>{total_debit}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Total Credit: </td>
             <td>{total_credit}</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -63,6 +79,7 @@ export default ({ entries }) => {
             <td></td>
             <td>Net_Balance: </td>
             <td>{net_balance}</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
