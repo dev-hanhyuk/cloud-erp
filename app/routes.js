@@ -15,10 +15,34 @@ import Inventory from '_components/inventory'
 import Inventory_History from '_components/inventory/InventoryHistory'
 import Inventory_Purchase from '_components/inventory/InventoryPurchase'
 
+import Overview from '_components/overview'
+import Overview_FinancialAnalysis from '_components/overview/FinancialAnalysis'
+import Overview_FinancialStatements from '_components/overview/FinancialStatements'
+
+
+import FixedAsset from '_components/fixed_asset'
+import FixedAsset_List from '_components/fixed_asset/AssetList'
+import FixedAsset_Depreciation from '_components/fixed_asset/AssetDepreciation'
+import FixedAsset_Register from '_components/fixed_asset/AssetRegister'
+import FixedAsset_Disposal from '_components/fixed_asset/AssetDisposal'
+
+
 export default () => (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <IndexRedirect to="/inventory" />
+      <IndexRedirect to="/fixed_asset" />
+
+      <Route path="/overview" component={Overview}>
+        <Route path="/overview/financial_analysis" component={Overview_FinancialAnalysis} />
+        <Route path="/overview/financial_statements" component={Overview_FinancialStatements} />
+      </Route>
+
+      <Route path="/fixed_asset" component={FixedAsset}>
+        <Route path="/fixed_asset/list" component={FixedAsset_List} />
+        <Route path="/fixed_asset/register" component={FixedAsset_Register} />
+        <Route path="/fixed_asset/depreciation" component={FixedAsset_Depreciation} />
+        <Route path="/fixed_asset/disposal" component={FixedAsset_Disposal} />
+      </Route>
 
       <Route path="/account" component={Account}>
         <Route path="/account/list" component={Account_List} />

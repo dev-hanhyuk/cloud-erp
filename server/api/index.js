@@ -9,6 +9,7 @@ api
   .use('/sales', require('./sales'))
   .use('/invoices', require('./invoices'))
   .use('/inventory', require('./inventory'))
+  .use('/assets', require('./assets'))
 
 
 // error handler (send 500 error)

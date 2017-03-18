@@ -10,6 +10,7 @@ const Admin = require('./admin')
 const Account = require('./account')
 const Entry = require('./entry')
 const Invoice = require('./invoice')
+const Asset = require('./asset')
 
 Product.belongsTo(Admin, { as: 'registered'}) //creator
 
@@ -34,6 +35,9 @@ Invoice.belongsTo(Business, { as: 'customer' })
 // Invoice.belongsTo(Customer) //invoice.getCustomer
 
 
+Asset.belongsTo(Business, { as: 'sold_to'})
+Asset.belongsTo(Business, { as: 'purchased_from'})
+Asset.belongsTo(Account)
 
 
-module.exports = { Sale, Invoice, Product, Inventory, Business, Admin, Account };
+module.exports = { Sale, Invoice, Product, Inventory, Business, Admin, Account, Asset };

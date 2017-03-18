@@ -21,6 +21,10 @@ const createAccounts = () => db.Promise.map([
   {id: 11100, name: 'cash', description: 'Cash and Equivalent', category: 'ASSET', subcategory: 'CURRENT_ASSET'},
   {id: 11200, name: 'Account Receivables', description: 'Account Receivable', category: 'ASSET', subcategory: 'CURRENT_ASSET'},
   {id: 11300, name: 'Inventory', description: 'Inventory to sell', category: 'ASSET', subcategory: 'CURRENT_ASSET'},
+  {id: 11400, name: 'Tangible Asset', description: 'PP&E', category: 'ASSET', subcategory: 'NON_CURRENT_ASSET'},
+  {id: 11410, name: 'Land', description: 'Land', category: 'ASSET', subcategory: 'NON_CURRENT_ASSET'},
+  {id: 11420, name: 'Building', description: 'Building', category: 'ASSET', subcategory: 'NON_CURRENT_ASSET'},
+  {id: 11500, name: 'Intangible Asset', description: 'Goodwill, etc', category: 'ASSET', subcategory: 'NON_CURRENT_ASSET'},
   {id: 21100, name: 'Account Payables', description: 'Account Payables', category: 'LIABILITY', subcategory: 'CURRENT_LIABILITY'},
   {id: 31100, name: "Sharehoders' Equity", description: 'Equity', category: 'EQUITY', subcategory: 'EQUITY'},
   {id: 41100, name: "Sales", description: 'Sales Revenue', category: 'REVENUE', subcategory: 'REVENUE'},
@@ -32,11 +36,6 @@ const createEntries = () => db.Promise.map([
   {account_id: 11100, description: 'cash in-flow', debit: 100000, posted_id: 1},
   {account_id: 31100, description: 'equity: cash in-flow', credit: 100000, posted_id: 1}
 ], e => db.model('entry').create(e))
-
-//{account_id: 11100, description: 'cash out-flow: inventory purchased in cash', debit: -3000, posted_id: 1},
-//{account_id: 11300, description: 'Inventory', debit: 3000, posted_id: 1}
-//{account_id: 11200, description: 'sales occurred', debit: 3000, posted_id: 2},
-//{account_id: 21100, description: 'purchased inventory', credit: 3000, posted_id: 1},
 
 
 db.didSync

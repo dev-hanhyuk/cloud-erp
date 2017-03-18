@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetch_accounts, create_account } from '_actions/account'
+import { fetch_all_accounts, create_account } from '_actions/account'
 import _ from 'lodash'
 
 import { ACCT_CATEGORIES } from '_components/account/account_map'
@@ -16,7 +16,7 @@ class SearchAccount extends Component {
     }
 
     componentWillMount() {
-      this.props.fetch_accounts()
+      this.props.fetch_all_accounts()
     }
 
     changeQuery = (prop, val) => this.setState({ [prop]: val })
@@ -107,4 +107,4 @@ class SearchAccount extends Component {
 }
 
 const mapStateToProps = ({ accounts }) => ({ accounts })
-export default connect(mapStateToProps, { fetch_accounts, create_account }) (SearchAccount)
+export default connect(mapStateToProps, { fetch_all_accounts, create_account }) (SearchAccount)

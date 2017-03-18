@@ -11,7 +11,7 @@ module.exports = router
 
 
 router.get('/', (req, res, next) => {
-  Account.findAll()
+  Account.findAll({ include: { model: Entry }})
     .then(accounts => res.send(accounts))
     .catch(next)
 })

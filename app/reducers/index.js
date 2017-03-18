@@ -7,6 +7,7 @@ import invoice from './invoice'
 import invoices from './invoices'
 import sales from './sales'
 import inventories from './inventories'
+import assets from './assets'
 
 const rootReducer = combineReducers({
   account,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   invoice,
   invoices,
   sales,
-  inventories
+  inventories,
+  assets
 })
 
 export default rootReducer

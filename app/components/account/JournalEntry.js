@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetch_accounts, fetch_all_entries, post_entry } from '_actions/account'
+import { fetch_all_accounts, fetch_all_entries, post_entry } from '_actions/account'
 import _ from 'lodash'
 
 import EntryTable from './EntryTable'
@@ -15,7 +15,7 @@ class JournalEntry extends Component {
 
     componentWillMount() {
       this.props.fetch_all_entries()
-      this.props.fetch_accounts()
+      this.props.fetch_all_accounts()
     }
 
     queryEntryByAcctId = (acct_id) => this.setState({ acct_id })
@@ -62,4 +62,4 @@ class JournalEntry extends Component {
 }
 
 const mapStateToProps = ({ entries, accounts }) => ({ entries, accounts })
-export default connect(mapStateToProps, { fetch_accounts, fetch_all_entries, post_entry }) (JournalEntry)
+export default connect(mapStateToProps, { fetch_all_accounts, fetch_all_entries, post_entry }) (JournalEntry)
