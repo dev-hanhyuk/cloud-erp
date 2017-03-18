@@ -3,13 +3,7 @@
 const api = module.exports = require('express').Router()
 
 api
-  .use('/business', require('./business'))
-  .use('/products', require('./products'))
-  .use('/accounts', require('./accounts'))
-  .use('/sales', require('./sales'))
-  .use('/invoices', require('./invoices'))
-  .use('/inventory', require('./inventory'))
-  .use('/assets', require('./assets'))
+  // .use('/business', require('./business'))
 
 
 // error handler (send 500 error)
