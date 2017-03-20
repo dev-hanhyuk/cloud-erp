@@ -4,6 +4,7 @@ const api = module.exports = require('express').Router()
 
 api
   .use('/po', require('./po'))
+  .use('/auth', require('./auth'))
 
 
 // error handler (send 500 error)

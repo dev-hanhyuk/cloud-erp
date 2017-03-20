@@ -2,8 +2,8 @@ const db = require('./index')
 
 
 const createAdmins = () => db.Promise.map([
-  { firstname: 'Han', lastname: 'Cho', email: 'hanhyuk83.cho@gmail.com', mobile: '111-111-1111', address: 'NEW YORK SOMEWHERE', level: 10 },
-  { firstname: 'First', lastname: 'Last', email: 'email@gmail.com', mobile: '111-222-1112', address: 'NEW YORK SOMEWHERE', level: 5 }
+  { firstname: 'Han', lastname: 'Cho', email: 'hanhyuk83.cho@gmail.com', password: '1234', mobile: '111-111-1111', address: 'NEW YORK SOMEWHERE', level: 10 },
+  { firstname: 'First', lastname: 'Last', email: 'email@gmail.com', password: '1234', mobile: '111-222-1112', address: 'NEW YORK SOMEWHERE', level: 5 }
 ], adm => db.model('admin').create(adm))
 
 // const createBusinesses = () => db.Promise.map([
