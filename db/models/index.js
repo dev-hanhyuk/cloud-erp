@@ -1,43 +1,22 @@
 'use strict';
 const db = require('../index')
 
-// const Customer = require('./customer')
-const Product = require('./product')
-const Sale = require('./sale')
-const Inventory = require('./inventory')
-const Business = require('./business')
+const PO = require('./PO')
 const Admin = require('./admin')
-const Account = require('./account')
-const Entry = require('./entry')
-const Invoice = require('./invoice')
-const Asset = require('./asset')
+const Business = require('./business')
+const Inventory = require('./inventory')
 
-Product.belongsTo(Admin, { as: 'registered'}) //creator
+/* PO - admin relations */
+PO.belongsTo(Admin, {as: 'initiated'})
+PO.belongsTo(Admin, {as: 'team_mgr'})
+PO.belongsTo(Admin, {as: 'ceo'})
+PO.belongsTo(Admin, {as: 'treasury'})
 
-Sale.belongsTo(Admin, { as: 'sold'})
-Product.hasOne(Sale)
-Sale.belongsTo(Product)
+Inventory.belongsTo(PO); //inventory.setPO(po_id)
+PO.hasOne(Inventory);
 
-Product.hasOne(Inventory)
-Inventory.belongsTo(Product)
-Inventory.belongsTo(Business)
-Inventory.belongsTo(Admin, { as: 'inspector'})
-
-Account.hasMany(Entry)
-Entry.belongsTo(Account)
-Entry.belongsTo(Admin, { as: 'posted' })
-
-Invoice.hasMany(Sale)
-Sale.belongsTo(Invoice)
-
-Business.hasMany(Invoice, { as: 'customer' }) //customer.getInvoices
-Invoice.belongsTo(Business, { as: 'customer' })
-// Invoice.belongsTo(Customer) //invoice.getCustomer
+PO.belongsTo(Business, { as: 'supplier'})
 
 
-Asset.belongsTo(Business, { as: 'sold_to'})
-Asset.belongsTo(Business, { as: 'purchased_from'})
-Asset.belongsTo(Account)
 
-
-module.exports = { Sale, Invoice, Product, Inventory, Business, Admin, Account, Asset };
+module.exports = { PO, Admin, Business, Inventory};

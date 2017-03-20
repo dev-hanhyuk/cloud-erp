@@ -9,6 +9,7 @@ const Admin = db.define('admin', {
   email: Sequelize.STRING,
   mobile: Sequelize.STRING,
   address: Sequelize.STRING,
+  department: Sequelize.ENUM( 'accounting', 'inventory', 'purchase', 'treasury'),
   level: Sequelize.INTEGER
 })
 
